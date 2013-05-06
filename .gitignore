@@ -1,0 +1,10 @@
+.DS_Store
+components/
+.sass-cache/
+.grunt/
+*.sublime-*
+
+public/scripts/*
+public/styles/*
+
+node_modules/*

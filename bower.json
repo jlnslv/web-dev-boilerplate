@@ -1,0 +1,13 @@
+{
+  "name": "jlnslv-boilerplate",
+  "version": "0.1.0",
+  "main": "assets/scripts/main.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "dependencies": {
+    "modernizr": "~2.6.2"
+  }
+}
