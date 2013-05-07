@@ -53,15 +53,12 @@ module.exports = function(grunt) {
 		compass: {
 			dist: {
 				options: {
-					sassDir: 'assets/styles',
-					cssDir: 'public/styles',
-					environment: 'production'
+					config: 'config.prod.rb'
 				}
 			},
 			dev: {
 				options: {
-					sassDir: 'assets/styles',
-					cssDir: 'public/styles'
+					config: 'config.rb'
 				}
 			}
 		},
@@ -73,7 +70,7 @@ module.exports = function(grunt) {
 					report: 'gzip'
 				},
 				files: {
-					'public/styles/main.css': ['public/styles/screen.css']
+					'public/styles/screen.css': ['public/styles/main.css']
 				}
 			}
 		},
@@ -84,8 +81,7 @@ module.exports = function(grunt) {
 					optimizationLevel: 3
 				},
 				files: {
-					'dist/img.png': 'src/img.png',
-					'dist/img.jpg': 'src/img.jpg'
+					'public/images/cat.jpg' : 'assets/images/cat.jpg'
 				}
 			},
 			dev: {
@@ -93,8 +89,7 @@ module.exports = function(grunt) {
 					optimizationLevel: 0
 				},
 				files: {
-					'dev/img.png': 'src/img.png',
-					'dev/img.jpg': 'src/img.jpg'
+					'public/images/cat.jpg' : 'assets/images/cat.jpg'
 				}
 			}
 		},
@@ -136,11 +131,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-contrib-livereload');
 
-	grunt.registerTask('default', ['concat']);
-	grunt.registerTask('build', ['concat', 'uglify', 'compass:dist', 'cssmin', 'imagemin']);
+	grunt.registerTask('default', ['concat', 'compass:dev']);
+	grunt.registerTask('build', ['concat', 'uglify', 'compass:dist', 'cssmin', 'imagemin:dist']);
 	grunt.registerTask('server', function (target) {
 		if (target === 'dist') {
-			return grunt.task.run(['concat', 'uglify', 'compass:dist', 'cssmin', 'imagemin', 'connect:dist:keepalive']);
+			return grunt.task.run(['concat', 'uglify', 'compass:dist', 'cssmin', 'imagemin:dev', 'connect:dist:keepalive']);
 		}
 
 		grunt.task.run([
