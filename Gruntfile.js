@@ -1,7 +1,7 @@
 'use strict';
 
-var path = require('path');
-var lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
+var path = require('path'),
+	lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
 
 var folderMount = function folderMount(connect, point) {
 	return connect.static(path.resolve(point));
@@ -53,14 +53,14 @@ module.exports = function(grunt) {
 		compass: {
 			dist: {
 				options: {
-					sassDir: 'assests/styles',
+					sassDir: 'assets/styles',
 					cssDir: 'public/styles',
 					environment: 'production'
 				}
 			},
 			dev: {
 				options: {
-					sassDir: 'assests/styles',
+					sassDir: 'assets/styles',
 					cssDir: 'public/styles'
 				}
 			}
@@ -106,7 +106,7 @@ module.exports = function(grunt) {
 		connect: {
 			livereload: {
 				options: {
-					port: 9001,
+					port: 8000,
 					middleware: function(connect, options) {
 						return [lrSnippet, folderMount(connect, options.base)];
 					}
@@ -117,7 +117,11 @@ module.exports = function(grunt) {
 		// Configuration to be run (and then tested)
 		regarde: {
 			txt: {
-				files: '**/*.txt',
+				files: ['assets/styles/**/*.scss', 'assets/scripts/**/*.js'],
+				tasks: ['compass:dev']
+			},
+			css: {
+				files: ['index.html', 'public/styles/**/*.css'],
 				tasks: ['livereload']
 			}
 		}
@@ -133,6 +137,16 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-livereload');
 
 	grunt.registerTask('default', ['concat']);
-	grunt.registerTask('build', ['concat', 'uglify', 'compass', 'cssmin', 'imagemin']);
-	grunt.registerTask('livereload', ['livereload-start', 'connect', 'regarde']);
+	grunt.registerTask('build', ['concat', 'uglify', 'compass:dist', 'cssmin', 'imagemin']);
+	grunt.registerTask('server', function (target) {
+		if (target === 'dist') {
+			return grunt.task.run(['concat', 'uglify', 'compass:dist', 'cssmin', 'imagemin', 'connect:dist:keepalive']);
+		}
+
+		grunt.task.run([
+			'livereload-start',
+			'connect',
+			'regarde'
+		]);
+	});
 };
