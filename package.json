@@ -1,6 +1,6 @@
 {
   "name": "jlnslv-boilerplate",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "Julien Silva <jlnslv@me.com>",
   "devDependencies": {
     "grunt": "~0.4.1",
