@@ -12,7 +12,20 @@ If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out th
 npm install
 ```
 
-Run the server (with livereload):
+Run a dev server (with livereload):
 ``` shell
 grunt server:dev
 ```
+
+## How-to
+The 'index.html` in the root directory is your development file.  The development assets folder is within the `assets` folder.
+
+The idea is that all your assets will be concatenated, minified and optimized into the `public` folder using the following command:
+``` shell
+grunt build
+```
+
+
+
+### Add new JavaScript Plugin
+New plugins have to added through bower.
