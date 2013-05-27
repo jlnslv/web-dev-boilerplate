@@ -30,7 +30,7 @@ grunt build
 
 
 ### Add new JavaScript Plugin
-New plugins have to added through bower.
+New plugins have to added through bower. I've added the follow `grunt plugin` https://github.com/stephenplusplus/grunt-bower-install. It injects components automagically into the index.html (not the one in `public`)
 
 ## The MIT License (MIT)
 
