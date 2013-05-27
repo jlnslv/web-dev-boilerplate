@@ -119,6 +119,17 @@ module.exports = function(grunt) {
 				files: ['index.html', 'public/styles/**/*.css'],
 				tasks: ['livereload']
 			}
+		},
+
+		'bower-install': {
+			// Point to the html file that should be updated
+			// when you run `grunt bower-install`
+			html: 'index.html',
+
+			// Optional:
+			// If your scripts shouldn't contain a certain
+			// portion of a url, it can be excluded
+			// ignorePath: 'app/'
 		}
 	});
 
@@ -130,6 +141,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-regarde');
 	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-contrib-livereload');
+	grunt.loadNpmTasks('grunt-bower-install');
 
 	grunt.registerTask('default', ['concat', 'compass:dev']);
 	grunt.registerTask('build', ['concat', 'uglify', 'compass:dist', 'cssmin', 'imagemin:dist']);
