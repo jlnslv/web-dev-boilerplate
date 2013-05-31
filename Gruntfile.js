@@ -151,6 +151,7 @@ module.exports = function(grunt) {
 		}
 
 		grunt.task.run([
+			'compass:dev',
 			'livereload-start',
 			'connect',
 			'regarde'
