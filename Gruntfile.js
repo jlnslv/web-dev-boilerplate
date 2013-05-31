@@ -143,7 +143,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-livereload');
 	grunt.loadNpmTasks('grunt-bower-install');
 
-	grunt.registerTask('default', ['concat', 'compass:dev']);
+	grunt.registerTask('default', ['bower-install', 'compass:dev']);
 	grunt.registerTask('build', ['concat', 'uglify', 'compass:dist', 'cssmin', 'imagemin:dist']);
 	grunt.registerTask('server', function (target) {
 		if (target === 'dist') {
@@ -151,6 +151,7 @@ module.exports = function(grunt) {
 		}
 
 		grunt.task.run([
+			'bower-install',
 			'compass:dev',
 			'livereload-start',
 			'connect',
