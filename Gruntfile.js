@@ -1,12 +1,5 @@
 'use strict';
 
-var path = require('path'),
-	lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
-
-var folderMount = function folderMount(connect, point) {
-	return connect.static(path.resolve(point));
-};
-
 module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -94,30 +87,21 @@ module.exports = function(grunt) {
 			}
 		},
 
-		livereload: {
-			port: 35729 // Default livereload listening port.
-		},
-
-		connect: {
-			livereload: {
-				options: {
-					port: 8000,
-					middleware: function(connect, options) {
-						return [lrSnippet, folderMount(connect, options.base)];
-					}
-				}
-			}
-		},
-
 		// Configuration to be run (and then tested)
-		regarde: {
-			txt: {
-				files: ['assets/styles/**/*.scss', 'assets/scripts/**/*.js'],
-				tasks: ['compass:dev']
+		watch: {
+			options: {
+				debounceDelay: 250,
+				livereload: true
 			},
 			css: {
-				files: ['index.html', 'public/styles/**/*.css'],
-				tasks: ['livereload']
+				files: ['assets/styles/**/*.scss'],
+				tasks: ['compass:dev']
+			},
+			js: {
+				files: ['assets/scripts/**/*.js']
+			},
+			html: {
+				files: ['*.html']
 			}
 		},
 
