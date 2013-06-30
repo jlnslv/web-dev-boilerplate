@@ -87,7 +87,6 @@ module.exports = function(grunt) {
 			}
 		},
 
-		// Configuration to be run (and then tested)
 		watch: {
 			options: {
 				debounceDelay: 250,
@@ -122,24 +121,20 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-compass');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-imagemin');
-	grunt.loadNpmTasks('grunt-regarde');
-	grunt.loadNpmTasks('grunt-contrib-connect');
-	grunt.loadNpmTasks('grunt-contrib-livereload');
 	grunt.loadNpmTasks('grunt-bower-install');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	grunt.registerTask('default', ['bower-install', 'compass:dev']);
 	grunt.registerTask('build', ['concat', 'uglify', 'compass:dist', 'cssmin', 'imagemin:dist']);
 	grunt.registerTask('server', function (target) {
 		if (target === 'dist') {
-			return grunt.task.run(['concat', 'uglify', 'compass:dist', 'cssmin', 'imagemin:dev', 'connect:dist:keepalive']);
+			return grunt.task.run(['concat', 'uglify', 'compass:dist', 'cssmin', 'imagemin:dev', 'watch']);
 		}
 
 		grunt.task.run([
 			'bower-install',
 			'compass:dev',
-			'livereload-start',
-			'connect',
-			'regarde'
+			'watch'
 		]);
 	});
 };
