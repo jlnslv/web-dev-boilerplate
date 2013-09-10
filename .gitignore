@@ -1,12 +1,11 @@
 .DS_Store
-components/
+app/bower_components
 .sass-cache/
 .grunt/
 *.sublime-*
-
-public/scripts/*
-public/styles/*
+.tmp
+prod/*
+prod/*
 
 node_modules/*
-
 Gemfile.lock

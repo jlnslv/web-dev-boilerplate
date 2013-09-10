@@ -1,140 +1,232 @@
 'use strict';
 
 module.exports = function(grunt) {
+	// show elapsed time at the end
+	require('time-grunt')(grunt);
+	// load all grunt tasks
+	require('load-grunt-tasks')(grunt);
+
+	// configurable paths
+	var folderConfig = {
+		app: 'app',
+		dist: 'prod'
+	};
+
 	grunt.initConfig({
-		pkg: grunt.file.readJSON('package.json'),
-		concat: {
-			options: {
-				// define a string to put between each file in the concatenated output
-				separator: ';'
+		folder: folderConfig,
+		watch: {
+			compass: {
+				files: ['<%= folder.app %>/assets/styles/{,*/}*.{scss,sass}'],
+				tasks: ['compass:server']
 			},
-			plugins: {
-				// the files to concatenate
-				src: ['components/jquery/jquery.js'],
-				// the location of the resulting JS file
-				dest: 'public/scripts/plugins.js'
+			styles: {
+				files: ['<%= folder.app %>/assets/styles/{,*/}*.css'],
+				tasks: ['copy:styles']
 			},
-
-			main: {
-				src: ['assets/scripts/core.js'],
-				dest: 'public/scripts/main.js'
-			},
-
-			app: {
-				src: ['assets/scripts/plugins.js', 'assets/scripts/main.js'],
-				dest: 'public/scripts/app.js'
+			livereload: {
+				options: {
+					livereload: '<%= connect.options.livereload %>'
+				},
+				files: [
+					'<%= folder.app %>/*.html',
+					'.tmp/assets/styles/{,*/}*.css',
+					'{.tmp,<%= folder.app %>}/assets/scripts/{,*/}*.js',
+					'<%= folder.app %>/assets/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+				]
 			}
 		},
-
-		uglify: {
+		connect: {
 			options: {
-				// the banner is inserted at the top of the output
-				banner: '/*! <%= pkg.version %> <%= grunt.template.today("dd-mm-yyyy") %> */\n',
-				report: 'gzip'
+				port: 9000,
+				livereload: 35729,
+				// change this to '0.0.0.0' to access the server from outside
+				hostname: 'localhost'
+			},
+			livereload: {
+				options: {
+					open: true,
+					base: [
+						'.tmp',
+						folderConfig.app
+					]
+				}
 			},
 			dist: {
 				options: {
-					sourceMap: 'public/scripts/source-map.js'
-				},
-				files: {
-					'public/scripts/modernizr.js': ['components/modernizr/modernizr.js'],
-					'public/scripts/app.min.js': ['<%= concat.app.dest %>']
+					open: true,
+					base: folderConfig.dist
 				}
 			}
 		},
-
+		clean: {
+			dist: {
+				files: [{
+					dot: true,
+					src: [
+						'.tmp',
+						'<%= folder.dist %>/*',
+						'!<%= folder.dist %>/.git*'
+					]
+				}]
+			},
+			server: '.tmp'
+		},
+		jshint: {
+			options: {
+				jshintrc: '.jshintrc'
+			},
+			all: [
+				'Gruntfile.js',
+				'<%= folder.app %>/assets/scripts/{,*/}*.js',
+				'!<%= folder.app %>/assets/scripts/vendor/*'
+			]
+		},
 		compass: {
+			options: {
+				sassDir: '<%= folder.app %>/assets/styles',
+				cssDir: '.tmp/assets/styles',
+				generatedImagesDir: '.tmp/assets/images/generated',
+				imagesDir: '<%= folder.app %>/assets/images',
+				javascriptsDir: '<%= folder.app %>/assets/scripts',
+				fontsDir: '<%= folder.app %>/assets/styles/fonts',
+				importPath: '<%= folder.app %>/bower_components',
+				httpImagesPath: '/assets/images',
+				httpGeneratedImagesPath: '/assets/images/generated',
+				httpFontsPath: '/assets/styles/fonts',
+				relativeAssets: false
+			},
 			dist: {
 				options: {
-					config: 'config.prod.rb'
+					generatedImagesDir: '<%= folder.dist %>/assets/images/generated'
 				}
 			},
-			dev: {
+			server: {
 				options: {
-					config: 'config.rb'
+					debugInfo: true
 				}
 			}
 		},
-
-		cssmin: {
-			minify: {
-				options: {
-					banner: '/* My minified css file */',
-					report: 'gzip'
-				},
+		'bower-install': {
+			app: {
+				html: '<%= folder.app %>/index.html',
+				ignorePath: '<%= folder.app %>/'
+			}
+		},
+		rev: {
+			dist: {
 				files: {
-					'public/styles/screen.css': ['public/styles/main.css']
+					src: [
+						'<%= folder.dist %>/assets/scripts/{,*/}*.js',
+						'<%= folder.dist %>/assets/styles/{,*/}*.css',
+						'<%= folder.dist %>/assets/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
+						'<%= folder.dist %>/assets/styles/fonts/{,*/}*.*'
+					]
 				}
 			}
 		},
-
+		useminPrepare: {
+			options: {
+				dest: '<%= folder.dist %>'
+			},
+			html: '<%= folder.app %>/index.html'
+		},
+		usemin: {
+			options: {
+				dirs: ['<%= folder.dist %>']
+			},
+			html: ['<%= folder.dist %>/{,*/}*.html'],
+			css: ['<%= folder.dist %>/assets/styles/{,*/}*.css']
+		},
 		imagemin: {
 			dist: {
-				options: {
-					optimizationLevel: 3
-				},
-				files: {
-					'public/images/cat.jpg' : 'assets/images/cat.jpg'
-				}
-			},
-			dev: {
-				options: {
-					optimizationLevel: 0
-				},
-				files: {
-					'public/images/cat.jpg' : 'assets/images/cat.jpg'
-				}
+				files: [{
+					expand: true,
+					cwd: '<%= folder.app %>/assets/images',
+					src: '{,*/}*.{png,jpg,jpeg}',
+					dest: '<%= folder.dist %>/assets/images'
+				}]
 			}
 		},
-
-		watch: {
-			options: {
-				debounceDelay: 250,
-				livereload: true
-			},
-			css: {
-				files: ['assets/styles/**/*.scss'],
-				tasks: ['compass:dev']
-			},
-			js: {
-				files: ['assets/scripts/**/*.js']
-			},
-			html: {
-				files: ['*.html']
+		svgmin: {
+			dist: {
+				files: [{
+					expand: true,
+					cwd: '<%= folder.app %>/assets/images',
+					src: '{,*/}*.svg',
+					dest: '<%= folder.dist %>/assets/images'
+				}]
 			}
 		},
-
-		'bower-install': {
-			// Point to the html file that should be updated
-			// when you run `grunt bower-install`
-			html: 'index.html',
-
-			// Optional:
-			// If your scripts shouldn't contain a certain
-			// portion of a url, it can be excluded
-			// ignorePath: 'app/'
+		copy: {
+			dist: {
+				files: [{
+					expand: true,
+					dot: true,
+					cwd: '<%= folder.app %>',
+					dest: '<%= folder.dist %>',
+					src: [
+						'*.{ico,png,txt}',
+						'/assets/images/{,*/}*.{webp,gif}',
+						'/assets/styles/fonts/{,*/}*.*'
+					]
+				}]
+			},
+			dist: {
+				expand: true,
+				dot: true,
+				cwd: '.tmp/assets/styles',
+				dest: '.tmp/assets/styles/',
+				src: '{,*/}*.css'
+			}
+		},
+		modernizr: {
+			devFile: '<%= folder.app %>/bower_components/modernizr/modernizr.js',
+			outputFile: '<%= folder.dist %>/bower_components/modernizr/modernizr.js',
+			files: [
+				'<%= folder.dist %>/assets/scripts/{,*/}*.js',
+				'<%= folder.dist %>/assets/styles/{,*/}*.css',
+				'!<%= folder.dist %>/assets/scripts/vendor/*'
+			],
+			uglify: true
+		},
+		concurrent: {
+			server: [
+				'compass'
+			],
+			dist: [
+				'compass',
+				'copy:dist',
+				'imagemin',
+				'svgmin'
+			]
 		}
 	});
 
-	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-contrib-compass');
-	grunt.loadNpmTasks('grunt-contrib-cssmin');
-	grunt.loadNpmTasks('grunt-contrib-imagemin');
-	grunt.loadNpmTasks('grunt-bower-install');
-	grunt.loadNpmTasks('grunt-contrib-watch');
-
-	grunt.registerTask('default', ['bower-install', 'compass:dev']);
-	grunt.registerTask('build', ['concat', 'uglify', 'compass:dist', 'cssmin', 'imagemin:dist']);
 	grunt.registerTask('server', function (target) {
 		if (target === 'dist') {
-			return grunt.task.run(['concat', 'uglify', 'compass:dist', 'cssmin', 'imagemin:dev', 'watch']);
+			return grunt.task.run(['build', 'connect:dist:keepalive']);
 		}
 
 		grunt.task.run([
-			'bower-install',
-			'compass:dev',
+			'clean:server',
+			'concurrent:server',
+			'connect:livereload',
 			'watch'
 		]);
 	});
+
+	grunt.registerTask('build', [
+		'clean:dist',
+		'useminPrepare',
+		'concurrent:dist',
+		'modernizr',
+		'copy:dist',
+		'rev',
+		'usemin'
+	]);
+
+	grunt.registerTask('default', [
+		'jshint',
+		'build'
+	]);
 };

@@ -1,15 +1,9 @@
 {
   "name": "jlnslv-boilerplate",
-  "version": "0.1.0",
-  "main": "assets/scripts/main.js",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "components"
-  ],
+  "version": "0.2.0",
   "dependencies": {
     "modernizr": "~2.6.2",
     "normalize-css": "~2.1.1",
-    "jquery": "~1.9.1"
+    "jquery": "~1.10.2"
   }
 }
