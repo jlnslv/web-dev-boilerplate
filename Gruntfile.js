@@ -1,6 +1,6 @@
-'use strict';
-
 module.exports = function(grunt) {
+	'use strict';
+
 	// show elapsed time at the end
 	require('time-grunt')(grunt);
 	// load all grunt tasks
@@ -128,7 +128,7 @@ module.exports = function(grunt) {
 			options: {
 				dest: '<%= folder.dist %>'
 			},
-			html: '<%= folder.app %>/index.html'
+			html: '<%= folder.app %>/*.html'
 		},
 		usemin: {
 			options: {
@@ -171,12 +171,11 @@ module.exports = function(grunt) {
 					]
 				}]
 			},
-			dist: {
+			html: {
 				expand: true,
-				dot: true,
-				cwd: '.tmp/assets/styles',
-				dest: '.tmp/assets/styles/',
-				src: '{,*/}*.css'
+				cwd: '<%= folder.app %>',
+				dest: '<%= folder.dist %>',
+				src: '*.html'
 			}
 		},
 		modernizr: {
@@ -195,7 +194,7 @@ module.exports = function(grunt) {
 			],
 			dist: [
 				'compass',
-				'copy:dist',
+				'copy',
 				'imagemin',
 				'svgmin'
 			]
@@ -219,8 +218,11 @@ module.exports = function(grunt) {
 		'clean:dist',
 		'useminPrepare',
 		'concurrent:dist',
+		'concat',
+		'cssmin',
+		'uglify',
 		'modernizr',
-		'copy:dist',
+		'copy',
 		'rev',
 		'usemin'
 	]);
