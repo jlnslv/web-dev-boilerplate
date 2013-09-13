@@ -1,5 +1,24 @@
-@import "../../bower_components/normalize-css/normalize";
+@import "../../bower_components/normalize-css/normalize.css";
 
-h1 {
-	font-size: 2em;
+html {
+	box-sizing: border-box;
+}
+
+body {
+	background-color: #ecf0f1;
+}
+
+.container {
+	background-color: #fff;
+	border-radius: 5px;
+	height: 300px;
+	margin: 50px auto 0;
+	padding: 100px 0 0;
+	text-align: center;
+	width: 500px;
+
+	h1 {
+		color: #34495e;
+		font-size: 2em;
+	}
 }
